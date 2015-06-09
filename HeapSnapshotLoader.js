@@ -27,14 +27,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+"use strict";
 var HeapSnapshotProgress = require('./HeapSnapshot').HeapSnapshotProgress;
 var TextUtils = require('./TextUtils').TextUtils;
+var JSHeapSnapshot = require('./JSHeapSnapshot').JSHeapSnapshot;
+
 /**
  * @constructor
  * @param {!HeapSnapshotWorkerDispatcher} dispatcher
  */
-HeapSnapshotLoader = function(dispatcher)
+var HeapSnapshotLoader = function(dispatcher)
 {
     this._reset();
     this._progress = new HeapSnapshotProgress(dispatcher);
@@ -63,10 +65,10 @@ HeapSnapshotLoader.prototype = {
      * @param {boolean} showHiddenData
      * @return {!JSHeapSnapshot}
      */
-    buildSnapshot: function(showHiddenData)
+    buildSnapshot: function(showHiddenData, serializeState)
     {
         this._progress.updateStatus("Processing snapshot\u2026");
-        var result = new JSHeapSnapshot(this._snapshot, this._progress, showHiddenData);
+        var result = new JSHeapSnapshot(this._snapshot, this._progress, showHiddenData, serializeState);
         this._reset();
         return result;
     },
@@ -144,6 +146,7 @@ HeapSnapshotLoader.prototype = {
                 this._snapshot.snapshot = /** @type {!HeapSnapshotHeader} */ (JSON.parse(this._json.slice(0, closingBracketIndex)));
                 this._json = this._json.slice(closingBracketIndex);
                 this._state = "find-nodes";
+                this._progress.updateStatus("parse-snapshot-info\u2026");
                 break;
             }
             case "find-nodes": {
@@ -160,6 +163,7 @@ HeapSnapshotLoader.prototype = {
                 this._array = new Uint32Array(nodes_length);
                 this._arrayIndex = 0;
                 this._state = "parse-nodes";
+                this._progress.updateStatus("find-nodes\u2026");
                 break;
             }
             case "parse-nodes": {
@@ -170,6 +174,7 @@ HeapSnapshotLoader.prototype = {
                 this._snapshot.nodes = this._array;
                 this._state = "find-edges";
                 this._array = null;
+                this._progress.updateStatus("parse-nodes\u2026");
                 break;
             }
             case "find-edges": {
@@ -186,6 +191,7 @@ HeapSnapshotLoader.prototype = {
                 this._array = new Uint32Array(edges_length);
                 this._arrayIndex = 0;
                 this._state = "parse-edges";
+                this._progress.updateStatus("find-edges\u2026");
                 break;
             }
             case "parse-edges": {
@@ -200,6 +206,7 @@ HeapSnapshotLoader.prototype = {
                     this._state = "find-trace-function-infos";
                 else
                     this._state = "find-strings";
+                this._progress.updateStatus("parse-edges\u2026");
                 break;
             }
             case "find-trace-function-infos": {
@@ -217,6 +224,7 @@ HeapSnapshotLoader.prototype = {
                 this._array = new Uint32Array(trace_function_info_length);
                 this._arrayIndex = 0;
                 this._state = "parse-trace-function-infos";
+                this._progress.updateStatus("find-trace-function-infos\u2026");
                 break;
             }
             case "parse-trace-function-infos": {
@@ -225,6 +233,7 @@ HeapSnapshotLoader.prototype = {
                 this._snapshot.trace_function_infos = this._array;
                 this._array = null;
                 this._state = "find-trace-tree";
+                this._progress.updateStatus("parse-trace-function-infos\u2026");
                 break;
             }
             case "find-trace-tree": {
@@ -237,6 +246,7 @@ HeapSnapshotLoader.prototype = {
                     return;
                 this._json = this._json.slice(bracketIndex);
                 this._state = "parse-trace-tree";
+                this._progress.updateStatus("find-trace-tree\u2026");
                 break;
             }
             case "parse-trace-tree": {
@@ -248,7 +258,7 @@ HeapSnapshotLoader.prototype = {
                 this._snapshot.trace_tree = JSON.parse(this._json.substring(0, bracketIndex + 1));
                 this._json = this._json.slice(bracketIndex);
                 this._state = "find-strings";
-                this._progress.updateStatus("Loading strings\u2026");
+                this._progress.updateStatus("parse-trace-tree\u2026");
                 break;
             }
             case "find-strings": {
@@ -261,9 +271,11 @@ HeapSnapshotLoader.prototype = {
                     return;
                 this._json = this._json.slice(bracketIndex);
                 this._state = "accumulate-strings";
+                this._progress.updateStatus("find-stringe\u2026");
                 break;
             }
             case "accumulate-strings":
+                this._progress.updateStatus("accumulate-strings - done\u2026");
                 return;
             }
         }

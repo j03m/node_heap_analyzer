@@ -27,13 +27,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-HeapSnapshotProgressEvent = {
+"use strict";
+var HeapSnapshotProgressEvent = {
     Update: "ProgressUpdate",
     BrokenSnapshot: "BrokenSnapshot"
 };
 
-HeapSnapshotCommon = {
+var HeapSnapshotCommon = {
 }
 
 HeapSnapshotCommon.baseSystemDistance = 100000000;

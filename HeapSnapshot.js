@@ -28,14 +28,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-var WebInspector = WebInspector || {};
-
+"use strict";
 
 /**
  * @interface
  */
-HeapSnapshotItem = function() { }
+var HeapSnapshotItem = function() {};
 
 HeapSnapshotItem.prototype = {
     /**
@@ -55,12 +53,11 @@ HeapSnapshotItem.prototype = {
  * @param {!HeapSnapshot} snapshot
  * @param {number=} edgeIndex
  */
-HeapSnapshotEdge = function(snapshot, edgeIndex)
-{
+var HeapSnapshotEdge = function(snapshot, edgeIndex){
     this._snapshot = snapshot;
     this._edges = snapshot.containmentEdges;
     this.edgeIndex = edgeIndex || 0;
-}
+};
 
 HeapSnapshotEdge.prototype = {
     /**
@@ -148,7 +145,7 @@ HeapSnapshotEdge.prototype = {
 /**
  * @interface
  */
-HeapSnapshotItemIterator = function() { }
+var HeapSnapshotItemIterator = function() { }
 
 HeapSnapshotItemIterator.prototype = {
     /**
@@ -168,7 +165,7 @@ HeapSnapshotItemIterator.prototype = {
 /**
  * @interface
  */
-HeapSnapshotItemIndexProvider = function() { }
+var HeapSnapshotItemIndexProvider = function() { }
 
 HeapSnapshotItemIndexProvider.prototype = {
     /**
@@ -183,7 +180,7 @@ HeapSnapshotItemIndexProvider.prototype = {
  * @implements {HeapSnapshotItemIndexProvider}
  * @param {!HeapSnapshot} snapshot
  */
-HeapSnapshotNodeIndexProvider = function(snapshot)
+var HeapSnapshotNodeIndexProvider = function(snapshot)
 {
     this._node = snapshot.createNode();
 }
@@ -207,7 +204,7 @@ HeapSnapshotNodeIndexProvider.prototype = {
  * @implements {HeapSnapshotItemIndexProvider}
  * @param {!HeapSnapshot} snapshot
  */
-HeapSnapshotEdgeIndexProvider = function(snapshot)
+var HeapSnapshotEdgeIndexProvider = function(snapshot)
 {
     this._edge = snapshot.createEdge(0);
 }
@@ -231,7 +228,7 @@ HeapSnapshotEdgeIndexProvider.prototype = {
  * @implements {HeapSnapshotItemIndexProvider}
  * @param {!HeapSnapshot} snapshot
  */
-HeapSnapshotRetainerEdgeIndexProvider = function(snapshot)
+var HeapSnapshotRetainerEdgeIndexProvider = function(snapshot)
 {
     this._retainerEdge = snapshot.createRetainingEdge(0);
 }
@@ -255,7 +252,7 @@ HeapSnapshotRetainerEdgeIndexProvider.prototype = {
  * @implements {HeapSnapshotItemIterator}
  * @param {!HeapSnapshotNode} node
  */
-HeapSnapshotEdgeIterator = function(node)
+var HeapSnapshotEdgeIterator = function(node)
 {
     this._sourceNode = node;
     this.edge = node._snapshot.createEdge(node.edgeIndexesStart());
@@ -295,7 +292,7 @@ HeapSnapshotEdgeIterator.prototype = {
  * @param {!HeapSnapshot} snapshot
  * @param {number} retainerIndex
  */
-HeapSnapshotRetainerEdge = function(snapshot, retainerIndex)
+var HeapSnapshotRetainerEdge = function(snapshot, retainerIndex)
 {
     this._snapshot = snapshot;
     this.setRetainerIndex(retainerIndex);
@@ -427,7 +424,7 @@ HeapSnapshotRetainerEdge.prototype = {
  * @implements {HeapSnapshotItemIterator}
  * @param {!HeapSnapshotNode} retainedNode
  */
-HeapSnapshotRetainerEdgeIterator = function(retainedNode)
+var HeapSnapshotRetainerEdgeIterator = function(retainedNode)
 {
     var snapshot = retainedNode._snapshot;
     var retainedNodeOrdinal = retainedNode.ordinal();
@@ -470,7 +467,7 @@ HeapSnapshotRetainerEdgeIterator.prototype = {
  * @param {!HeapSnapshot} snapshot
  * @param {number=} nodeIndex
  */
-HeapSnapshotNode = function(snapshot, nodeIndex)
+var HeapSnapshotNode = function(snapshot, nodeIndex)
 {
     this._snapshot = snapshot;
     this.nodeIndex = nodeIndex || 0;
@@ -676,7 +673,7 @@ HeapSnapshotNode.prototype = {
  * @implements {HeapSnapshotItemIterator}
  * @param {!HeapSnapshotNode} node
  */
-HeapSnapshotNodeIterator = function(node)
+var HeapSnapshotNodeIterator = function(node)
 {
     this.node = node;
     this._nodesLength = node._snapshot.nodes.length;
@@ -717,7 +714,7 @@ HeapSnapshotNodeIterator.prototype = {
  * @param {!HeapSnapshotItemIndexProvider} itemProvider
  * @param {!Array.<number>|!Uint32Array} indexes
  */
-HeapSnapshotIndexRangeIterator = function(itemProvider, indexes)
+var HeapSnapshotIndexRangeIterator = function(itemProvider, indexes)
 {
     this._itemProvider = itemProvider;
     this._indexes = indexes;
@@ -760,7 +757,7 @@ HeapSnapshotIndexRangeIterator.prototype = {
  * @param {!HeapSnapshotItemIterator} iterator
  * @param {function(!HeapSnapshotItem):boolean=} filter
  */
-HeapSnapshotFilteredIterator = function(iterator, filter)
+var HeapSnapshotFilteredIterator = function(iterator, filter)
 {
     this._iterator = iterator;
     this._filter = filter;
@@ -808,7 +805,7 @@ HeapSnapshotFilteredIterator.prototype = {
  * @param {!HeapSnapshotWorkerDispatcher=} dispatcher
  * @constructor
  */
-HeapSnapshotProgress = function(dispatcher)
+var HeapSnapshotProgress = function(dispatcher)
 {
     this._dispatcher = dispatcher;
 }
@@ -856,7 +853,7 @@ HeapSnapshotProgress.prototype = {
  * @param {string} title
  * @constructor
  */
-HeapSnapshotProblemReport = function(title)
+var HeapSnapshotProblemReport = function(title)
 {
     this._errors = [title];
 }
@@ -888,8 +885,9 @@ HeapSnapshotProblemReport.prototype = {
  * @param {!HeapSnapshotProgress} progress
  * @constructor
  */
-HeapSnapshot = function(profile, progress)
+var HeapSnapshot = function(profile, progress)
 {
+
     /** @type {!Uint32Array} */
     this.nodes = profile.nodes;
     /** @type {!Uint32Array} */
@@ -1064,6 +1062,7 @@ HeapSnapshot.prototype = {
 
         for (var toNodeFieldIndex = edgeToNodeOffset, l = containmentEdges.length; toNodeFieldIndex < l; toNodeFieldIndex += edgeFieldsCount) {
             var toNodeIndex = containmentEdges[toNodeFieldIndex];
+            console.log("index:", toNodeIndex, "fieldCount:", nodeFieldCount);
             if (toNodeIndex % nodeFieldCount)
                 throw new Error("Invalid toNodeIndex " + toNodeIndex);
             ++firstRetainerIndex[toNodeIndex / nodeFieldCount];
@@ -2178,7 +2177,7 @@ HeapSnapshot.prototype = {
  * @param {!HeapSnapshotItemIterator} iterator
  * @param {!HeapSnapshotItemIndexProvider} indexProvider
  */
-HeapSnapshotItemProvider = function(iterator, indexProvider)
+var HeapSnapshotItemProvider = function(iterator, indexProvider)
 {
     this._iterator = iterator;
     this._indexProvider = indexProvider;
@@ -2254,7 +2253,7 @@ HeapSnapshotItemProvider.prototype = {
  * @param {!HeapSnapshotEdgeIterator} edgesIter
  * @param {!HeapSnapshotItemIndexProvider} indexProvider
  */
-HeapSnapshotEdgesProvider = function(snapshot, filter, edgesIter, indexProvider)
+var HeapSnapshotEdgesProvider = function(snapshot, filter, edgesIter, indexProvider)
 {
     this.snapshot = snapshot;
     var iter = filter ? new HeapSnapshotFilteredIterator(edgesIter, /** @type {function(!HeapSnapshotItem):boolean} */ (filter)) : edgesIter;
@@ -2354,7 +2353,7 @@ HeapSnapshotEdgesProvider.prototype = {
  * @param {?function(!HeapSnapshotNode):boolean} filter
  * @param {(!Array.<number>|!Uint32Array)} nodeIndexes
  */
-HeapSnapshotNodesProvider = function(snapshot, filter, nodeIndexes)
+var HeapSnapshotNodesProvider = function(snapshot, filter, nodeIndexes)
 {
     this.snapshot = snapshot;
     var indexProvider = new HeapSnapshotNodeIndexProvider(snapshot);
@@ -2461,6 +2460,7 @@ if (module && module.exports){
     exports.HeapSnapshotProgress = HeapSnapshotProgress;
     exports.HeapSnapshotProblemReport = HeapSnapshotProblemReport;
     exports.HeapSnapshot = HeapSnapshot;
+    exports.HeapSnapshotEdge = HeapSnapshotEdge;
     exports.HeapSnapshotMetainfo = HeapSnapshotMetainfo;
     exports.HeapSnapshotHeader = HeapSnapshotHeader;
     exports.HeapSnapshotItemProvider = HeapSnapshotItemProvider;

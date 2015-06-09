@@ -27,11 +27,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+"use strict";
 /**
  * @constructor
  */
-HeapSnapshotWorkerDispatcher = function(globalObject, postMessage)
+var HeapSnapshotWorkerDispatcher = function(globalObject, postMessage)
 {
     this._objects = [];
     this._global = globalObject;

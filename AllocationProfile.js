@@ -27,11 +27,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+"use strict";
 /**
  * @constructor
  */
-AllocationProfile = function(profile, liveObjectStats)
+var AllocationProfile = function(profile, liveObjectStats)
 {
     this._strings = profile.strings;
     this._liveObjectStats = liveObjectStats;
@@ -48,7 +48,7 @@ AllocationProfile = function(profile, liveObjectStats)
     this._traceTree = this._buildAllocationTree(profile, liveObjectStats);
 }
 
-AllocationProfile.prototype = {
+var AllocationProfile.prototype = {
     _buildFunctionAllocationInfos: function(profile)
     {
         var strings = this._strings;
@@ -273,7 +273,7 @@ AllocationProfile.prototype = {
  * @param {number} liveSize
  * @param {?TopDownAllocationNode} parent
  */
-TopDownAllocationNode = function(id, functionInfo, count, size, liveCount, liveSize, parent)
+var TopDownAllocationNode = function(id, functionInfo, count, size, liveCount, liveSize, parent)
 {
     this.id = id;
     this.functionInfo = functionInfo;
@@ -290,7 +290,7 @@ TopDownAllocationNode = function(id, functionInfo, count, size, liveCount, liveS
  * @constructor
  * @param {!FunctionAllocationInfo} functionInfo
  */
-BottomUpAllocationNode = function(functionInfo)
+var ottomUpAllocationNode = function(functionInfo)
 {
     this.functionInfo = functionInfo;
     this.allocationCount = 0;
@@ -351,7 +351,7 @@ BottomUpAllocationNode.prototype = {
  * @param {number} line
  * @param {number} column
  */
-FunctionAllocationInfo = function(functionName, scriptName, scriptId, line, column)
+var FunctionAllocationInfo = function(functionName, scriptName, scriptId, line, column)
 {
     this.functionName = functionName;
     this.scriptName = scriptName;

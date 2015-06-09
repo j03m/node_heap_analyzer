@@ -28,17 +28,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var WebInspector = WebInspector || {};
+"use strict";
 
-
+var HeapSnapshotClasses = require("./HeapSnapshot");
+var HeapSnapshot = HeapSnapshotClasses.HeapSnapshot;
+var HeapSnapshotNode = HeapSnapshotClasses.HeapSnapshotNode;
+var HeapSnapshotEdge= HeapSnapshotClasses.HeapSnapshotEdge;
+var HeapSnapshotRetainerEdge = HeapSnapshotClasses.HeapSnapshotRetainerEdge;
 /**
  * @constructor
  * @extends {HeapSnapshot}
  * @param {!Object} profile
  * @param {!HeapSnapshotProgress} progress
  * @param {boolean} showHiddenData
+ * @param {boolean} serializeState - dump state to file at various points in processing
  */
-JSHeapSnapshot = function(profile, progress, showHiddenData)
+var JSHeapSnapshot = function(profile, progress, showHiddenData, serializeState)
 {
     this._nodeFlags = { // bit flags
         canBeQueried: 1,
@@ -50,7 +55,9 @@ JSHeapSnapshot = function(profile, progress, showHiddenData)
     };
     this._lazyStringCache = { };
     this._showHiddenData = showHiddenData;
-    HeapSnapshot.call(this, profile, progress);
+    this._serializeState = serializeState;
+    console.log("How is this defined?", HeapSnapshot)
+    HeapSnapshot.call(this, profile, progress, serializeState);
 }
 
 JSHeapSnapshot.prototype = {
@@ -493,7 +500,7 @@ JSHeapSnapshot.prototype = {
  * @param {!JSHeapSnapshot} snapshot
  * @param {number=} nodeIndex
  */
-JSHeapSnapshotNode = function(snapshot, nodeIndex)
+var JSHeapSnapshotNode = function(snapshot, nodeIndex)
 {
     HeapSnapshotNode.call(this, snapshot, nodeIndex);
 }
@@ -689,7 +696,7 @@ JSHeapSnapshotNode.prototype = {
  * @param {!JSHeapSnapshot} snapshot
  * @param {number=} edgeIndex
  */
-JSHeapSnapshotEdge = function(snapshot, edgeIndex)
+var JSHeapSnapshotEdge = function(snapshot, edgeIndex)
 {
     HeapSnapshotEdge.call(this, snapshot, edgeIndex);
 }
@@ -847,7 +854,7 @@ JSHeapSnapshotEdge.prototype = {
  * @param {!JSHeapSnapshot} snapshot
  * @param {number} retainerIndex
  */
-JSHeapSnapshotRetainerEdge = function(snapshot, retainerIndex)
+var JSHeapSnapshotRetainerEdge = function(snapshot, retainerIndex)
 {
     HeapSnapshotRetainerEdge.call(this, snapshot, retainerIndex);
 }
